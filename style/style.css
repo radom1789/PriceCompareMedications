@@ -1,0 +1,217 @@
+:root {
+  --blue-primary: #1d4ed8;
+  --blue-light: #eff6ff;
+  --blue-mid: #3b82f6;
+  --accent: #0ea5e9;
+  --green: #10b981;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.logo-font { font-family: 'Syne', sans-serif; }
+
+/* Header */
+header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Search bar */
+.search-wrapper {
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  padding: 1rem 1.25rem 1rem 3.25rem;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  font-size: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus {
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+}
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Sprint goal banner */
+.sprint-banner {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 40%, #2563eb 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.sprint-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Cards */
+.product-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-mid), var(--accent));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(29,78,216,0.12);
+  border-color: #bfdbfe;
+}
+.product-card:hover::before { opacity: 1; }
+
+.pharmacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+
+/* Pharmacy color coding */
+.ph-cvs        { background: #fef2f2; color: #dc2626; }
+.ph-walgreens  { background: #f0fdf4; color: #16a34a; }
+.ph-giant-eagle{ background: #fef9c3; color: #a16207; }
+.ph-amazon     { background: #fff7ed; color: #c2410c; }
+.ph-rite-aid   { background: #eff6ff; color: #1d4ed8; }
+.ph-costco     { background: #f0f9ff; color: #0369a1; }
+
+/* Location tag */
+.location-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Pittsburgh badge in header */
+.pgh-badge {
+  background: var(--blue-light);
+  color: var(--blue-primary);
+  border: 1px solid #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Filter badge */
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* Results count */
+.results-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Empty state */
+#empty-state { display: none; }
+
+/* Footer */
+footer {
+  background: white;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.product-card { animation: fadeInUp 0.3s ease both; }
+.product-card:nth-child(1)  { animation-delay: 0.03s; }
+.product-card:nth-child(2)  { animation-delay: 0.06s; }
+.product-card:nth-child(3)  { animation-delay: 0.09s; }
+.product-card:nth-child(4)  { animation-delay: 0.12s; }
+.product-card:nth-child(5)  { animation-delay: 0.15s; }
+.product-card:nth-child(6)  { animation-delay: 0.18s; }
+.product-card:nth-child(7)  { animation-delay: 0.21s; }
+.product-card:nth-child(8)  { animation-delay: 0.24s; }
+.product-card:nth-child(9)  { animation-delay: 0.27s; }
+.product-card:nth-child(10) { animation-delay: 0.30s; }
+
+.price-tag {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--blue-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.compare-hint {
+  font-size: 0.7rem;
+  color: var(--green);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .price-tag { font-size: 1.35rem; }
+}
