@@ -61,22 +61,68 @@
   <main class="max-w-5xl mx-auto px-4 py-8">
 
     <!-- Search + filters row -->
-    <div class="mb-6">
-      <div class="search-wrapper mb-3">
-        <span class="search-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-        </span>
-        <input
-          type="text"
-          id="search-input"
-          class="search-input"
-          placeholder="Search products (e.g. ibuprofen, allergy, blood pressure...)"
-          autocomplete="off"
-          autofocus
-        />
-      </div>
+    <!-- Search + filters row -->
+<div class="mb-6">
+  <div class="search-wrapper mb-3">
+    <span class="search-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </span>
+    <input
+      type="text"
+      id="search-input"
+      class="search-input"
+      placeholder="Search products (e.g. ibuprofen, allergy, blood pressure...)"
+      autocomplete="off"
+      autofocus
+    />
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-panel mb-3">
+    <div class="filter-group">
+      <label for="store-filter" class="filter-label">Store</label>
+      <select id="store-filter" class="filter-select">
+        <option value="all">All stores</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="location-filter" class="filter-label">Location</label>
+      <select id="location-filter" class="filter-select">
+        <option value="all">All locations</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category-filter" class="filter-label">Category</label>
+      <select id="category-filter" class="filter-select">
+        <option value="all">All categories</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sort-filter" class="filter-label">Sort</label>
+      <select id="sort-filter" class="filter-select">
+        <option value="lowest">Lowest price</option>
+        <option value="highest">Highest price</option>
+        <option value="az">Name A–Z</option>
+      </select>
+    </div>
+
+    <button id="clear-filters" class="clear-btn" type="button">Clear filters</button>
+  </div>
+
+  <!-- Summary row -->
+  <div class="flex items-center justify-between gap-3 flex-wrap">
+    <div class="flex items-center gap-3 flex-wrap">
+      <span class="results-label" id="results-count">Showing 10 products</span>
+      <span class="summary-chip" id="lowest-price-chip">Lowest price: --</span>
+    </div>
+    <span class="summary-chip" id="active-filters-chip">All products</span>
+  </div>
+</div>
 
       <!-- Filter chips row -->
       <div class="flex items-center gap-3 flex-wrap">
