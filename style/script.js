@@ -23,7 +23,7 @@ const products = [
     pharmacy: "Giant Eagle Pharmacy",
     phClass: "ph-giant-eagle",
     category: "Allergy",
-    location: "Oakland, Pittsburgh",
+    location: "Oakland, PA",
     savings: "Best value",
   },
   {
@@ -32,7 +32,7 @@ const products = [
     pharmacy: "CVS Pharmacy",
     phClass: "ph-cvs",
     category: "Allergy",
-    location: "Shadyside, Pittsburgh",
+    location: "Shadyside, PA",
     savings: null,
   },
   {
@@ -50,7 +50,7 @@ const products = [
     pharmacy: "Rite Aid",
     phClass: "ph-rite-aid",
     category: "Blood Pressure",
-    location: "Squirrel Hill, Pittsburgh",
+    location: "Squirrel Hill, PA",
     savings: null,
   },
   {
@@ -59,7 +59,7 @@ const products = [
     pharmacy: "Walgreens",
     phClass: "ph-walgreens",
     category: "Digestive Health",
-    location: "Downtown, Pittsburgh",
+    location: "Downtown, PA",
     savings: null,
   },
   {
@@ -68,7 +68,7 @@ const products = [
     pharmacy: "Costco Pharmacy",
     phClass: "ph-costco",
     category: "Digestive Health",
-    location: "Waterfront, Pittsburgh",
+    location: "Waterfront, PA",
     savings: "Save $5.50 vs Walgreens",
   },
   {
@@ -86,7 +86,7 @@ const products = [
     pharmacy: "Giant Eagle Pharmacy",
     phClass: "ph-giant-eagle",
     category: "Diabetes",
-    location: "Shadyside, Pittsburgh",
+    location: "Shadyside, PA",
     savings: "Lowest price",
   },
 ];
