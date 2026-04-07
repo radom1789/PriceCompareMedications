@@ -267,9 +267,10 @@ function renderCards(filtered) {
         <div class="product-image-wrap">
           <img
             class="product-image"
-            src="${product.image || getProductImagePath(product.name)}" // let mockData.js control the image path directly.
+            src="${product.image || getProductImagePath(product.name)}"
             alt="${product.name} demo product image"
             loading="lazy"
+            onerror="this.onerror=null;this.src='assets/medications/placeholder.png';"
           />
         </div>
       </div>
