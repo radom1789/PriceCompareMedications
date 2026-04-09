@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details – PriceCompare</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+  <header>
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#1d4ed8,#0ea5e9)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <span class="logo-font text-xl font-extrabold tracking-tight" style="color:#1d4ed8">PriceCompare</span>
+      </div>
+
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <span class="pgh-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          Pittsburgh, PA
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="details-main">
+    <a href="index.html" class="back-link">← Back to results</a>
+    <div id="product-details-root"></div>
+  </main>
+
+  <footer>
+    <p>Demo for Agile Methods Class – Team 1 (Shane J, Tracy Yang, Hai Xi)</p>
+  </footer>
+
+  <script type="module" src="style/product-details.js"></script>
+</body>
+</html>

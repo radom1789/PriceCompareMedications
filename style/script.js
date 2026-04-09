@@ -2,7 +2,12 @@ import { mockMedications } from "../data/mockData.js";
 
 const products = mockMedications.flatMap((med) => {
   return Object.entries(med.pricesByStore).map(([pharmacy, price]) => ({
+    id: med.id,
+    medicationId: med.id,
     name: `${med.name} ${med.strength}`,
+    baseName: med.name,
+    genericName: med.genericName,
+    brandNames: med.brandNames,
     quantity:
       med.form.includes("Tablet") || med.form.includes("Capsule")
         ? "30 count"
@@ -21,6 +26,12 @@ const products = mockMedications.flatMap((med) => {
     image: med.image,
     slug: med.slug,
     isPrescription: med.isPrescription,
+    strength: med.strength,
+    form: med.form,
+    description: med.description,
+    conditions: med.conditions,
+    symptoms: med.symptoms,
+    maxDosage: med.maxDosage,
   }));
 });
 
@@ -41,7 +52,9 @@ const clearAllFiltersButton = document.getElementById("clear-all-filters");
 const selectedStores = new Set();
 
 function uniqueValues(field) {
-  return [...new Set(products.map((product) => product[field]))].sort((a, b) => a.localeCompare(b));
+  return [...new Set(products.map((product) => product[field]))].sort((a, b) =>
+    a.localeCompare(b)
+  );
 }
 
 function formatPrice(price) {
@@ -65,13 +78,16 @@ function formatUnitPrice(price, quantity) {
 }
 
 function splitProductName(name) {
-  const match = name.match(/^(.*?)(\s+\d+\s*(?:mg|iu)(?:\s*[a-zA-Z]*)?)$/i);
+  const match = name.match(/^(.*?)(\s+\d+\s*(?:mg|mcg|iu)(?:\s*[a-zA-Z]*)?)$/i);
   if (!match) {
     return { title: name, strength: "" };
   }
 
   const rawStrength = match[2].trim();
-  const formattedStrength = rawStrength.replace(/\bmg\b/gi, "mg").replace(/\biu\b/gi, "IU");
+  const formattedStrength = rawStrength
+    .replace(/\bmg\b/gi, "mg")
+    .replace(/\bmcg\b/gi, "mcg")
+    .replace(/\biu\b/gi, "IU");
 
   return {
     title: match[1].trim(),
@@ -95,6 +111,14 @@ function slugifyLabel(value) {
 
 function getProductImagePath(name) {
   return `assets/medications/${slugifyProductName(name)}.png`;
+}
+
+function buildDetailsUrl(product) {
+  const params = new URLSearchParams({
+    slug: product.slug,
+    store: product.pharmacy,
+  });
+  return `product-details.html?${params.toString()}`;
 }
 
 function populateStateOptions() {
@@ -206,7 +230,14 @@ function filterProducts() {
 
     const matchesPrice = matchesPriceBand(product.price, selectedPriceBand);
 
-    return matchesQuery && matchesState && matchesCity && matchesCategory && matchesStore && matchesPrice;
+    return (
+      matchesQuery &&
+      matchesState &&
+      matchesCity &&
+      matchesCategory &&
+      matchesStore &&
+      matchesPrice
+    );
   });
 }
 
@@ -231,19 +262,25 @@ function renderCards(filtered) {
     const priceParts = formatPriceParts(product.price);
     const unitPrice = formatUnitPrice(product.price, product.quantity);
     const nameParts = splitProductName(product.name);
+    const detailsUrl = buildDetailsUrl(product);
+
     const card = document.createElement("article");
     card.className = "product-card";
     card.style.animationDelay = index * 0.04 + "s";
+
     card.innerHTML = `
       <div class="store-banner category-${slugifyLabel(product.category)}">
         <span class="store-banner-category">${product.category}</span>
         <span class="store-banner-name">${nameParts.title}</span>
         <span class="store-banner-quantity">${product.quantity}${nameParts.strength ? ` · ${nameParts.strength}` : ""}</span>
       </div>
+
       <h3 class="product-title">${product.pharmacy}</h3>
+
       <div class="product-content-row">
         <div class="product-copy">
           <p class="product-purpose">${product.purpose}</p>
+
           <div class="card-price-row">
             <div>
               <div class="price-block">
@@ -253,32 +290,42 @@ function renderCards(filtered) {
                   <span class="price-cents">${priceParts.cents}</span>
                 </div>
                 ${
-              unitPrice
+                  unitPrice
                     ? `<div class="unit-price">($${unitPrice}/count)</div>`
                     : ""
                 }
               </div>
+
               <div class="compare-hint${product.comparisonLabel ? "" : " compare-hint-placeholder"}">
                 ${product.comparisonLabel || "&nbsp;"}
               </div>
             </div>
           </div>
         </div>
+
         <div class="product-image-wrap">
-          <img
-            class="product-image"
-            src="${product.image || getProductImagePath(product.name)}"
-            alt="${product.name} demo product image"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='assets/medications/placeholder.png';"
-          />
+          <a href="${detailsUrl}" class="product-image-link" aria-label="View details for ${product.name} at ${product.pharmacy}">
+            <img
+              class="product-image"
+              src="${product.image || getProductImagePath(product.name)}"
+              alt="${product.name} demo product image"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='assets/medications/placeholder.png';"
+            />
+          </a>
         </div>
       </div>
+
+      <div class="product-card-actions">
+        <a href="${detailsUrl}" class="details-button">View details</a>
+      </div>
+
       <div class="location-banner">
         <span>${product.city}, ${product.state}</span>
         <small>ZIP ${product.zip}</small>
       </div>
     `;
+
     grid.appendChild(card);
   });
 }
@@ -305,11 +352,13 @@ function render() {
 }
 
 searchInput.addEventListener("input", render);
+
 stateFilter.addEventListener("change", () => {
   populateCityOptions(stateFilter.value);
   cityFilter.value = "all";
   render();
 });
+
 cityFilter.addEventListener("change", render);
 categoryFilter.addEventListener("change", render);
 priceFilter.addEventListener("change", render);
