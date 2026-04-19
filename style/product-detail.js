@@ -1,4 +1,11 @@
-import { mockMedications } from "../data/mockData.js";
+(function () {
+const medicationService = window.medicationDataService;
+const medications = medicationService.getMedications();
+const knownStores = medicationService.getKnownStores(medications);
+
+function displayStoreName(name) {
+  return medicationService.defaultStoreDisplayName(name);
+}
 
 const root = document.getElementById("product-details-root");
 
@@ -15,7 +22,19 @@ function getQueryParams() {
   return {
     slug: params.get("slug"),
     selectedStore: params.get("store"),
+    selectedCity: params.get("city"),
+    selectedState: params.get("state"),
   };
+}
+
+function buildStoreDetailsUrl(slug, storeKey, city, state) {
+  const params = new URLSearchParams({
+    slug,
+    store: storeKey,
+    city,
+    state,
+  });
+  return `product-details.html?${params.toString()}`;
 }
 
 function renderNotFound() {
@@ -27,15 +46,38 @@ function renderNotFound() {
   `;
 }
 
-function renderStoreRows(pricesByStore, selectedStore) {
-  return Object.entries(pricesByStore)
-    .sort((a, b) => a[1] - b[1])
-    .map(([store, price]) => {
-      const rowClass = store === selectedStore ? "details-highlight-row" : "";
+function renderStoreRows(medication, locationOffers, selectedStore) {
+  const lowestPriceByStore = locationOffers.reduce((accumulator, offer) => {
+    if (!(offer.storeKey in accumulator) || offer.price < accumulator[offer.storeKey]) {
+      accumulator[offer.storeKey] = offer.price;
+    }
+    return accumulator;
+  }, {});
+
+  return knownStores
+    .map((storeKey) => {
+      const rowClass = storeKey === selectedStore ? "details-highlight-row" : "";
+      const hasPrice = storeKey in lowestPriceByStore;
+      const rowLink = hasPrice
+        ? buildStoreDetailsUrl(
+            medication.slug,
+            storeKey,
+            locationOffers[0].city,
+            locationOffers[0].state
+          )
+        : null;
       return `
         <tr class="${rowClass}">
-          <td>${store}</td>
-          <td>${formatPrice(price)}</td>
+          <td>${
+            hasPrice
+              ? `<a href="${rowLink}" class="details-store-link">${displayStoreName(storeKey)}</a>`
+              : displayStoreName(storeKey)
+          }</td>
+          <td class="${hasPrice ? "" : "details-price-unavailable"}">${
+            hasPrice
+              ? `<a href="${rowLink}" class="details-store-link">${formatPrice(lowestPriceByStore[storeKey])}</a>`
+              : "N/A"
+          }</td>
         </tr>
       `;
     })
@@ -57,14 +99,23 @@ function renderHistoricalRows(historicalPrices) {
     .join("");
 }
 
-function renderMedication(medication, selectedStore) {
-  const fallbackStore = Object.keys(medication.pricesByStore)[0];
-  const activeStore =
-    selectedStore && medication.pricesByStore[selectedStore]
-      ? selectedStore
-      : fallbackStore;
-
-  const activePrice = medication.pricesByStore[activeStore];
+function renderMedication(medication, selectedStore, selectedCity, selectedState) {
+  const requestedLocationOffers = medicationService.getOffersForLocation(
+    medication,
+    selectedCity,
+    selectedState
+  );
+  const locationOffers = requestedLocationOffers.length
+    ? requestedLocationOffers
+    : medicationService.getOffersForLocation(
+        medication,
+        medication.offers[0].city,
+        medication.offers[0].state
+      );
+  const activeOffer =
+    locationOffers.find((offer) => offer.storeKey === selectedStore) ||
+    locationOffers.slice().sort((left, right) => left.price - right.price)[0];
+  const activeLocationLabel = `${activeOffer.city}, ${activeOffer.state}`;
 
   root.innerHTML = `
     <div class="details-layout">
@@ -89,8 +140,9 @@ function renderMedication(medication, selectedStore) {
         </p>
 
         <div class="details-price-card">
-          <div class="details-price-store">Current selected store: ${activeStore}</div>
-          <div class="details-price-value">${formatPrice(activePrice)}</div>
+          <div class="details-price-store">Current selected store: ${displayStoreName(activeOffer.storeKey)}</div>
+          <div class="details-price-value">${formatPrice(activeOffer.price)}</div>
+          <div class="details-price-store" style="margin-top:0.35rem;margin-bottom:0;">Location: ${activeLocationLabel}</div>
         </div>
 
         <div class="details-pill-row">
@@ -147,7 +199,7 @@ function renderMedication(medication, selectedStore) {
                 </tr>
               </thead>
               <tbody>
-                ${renderStoreRows(medication.pricesByStore, activeStore)}
+                ${renderStoreRows(medication, locationOffers, activeOffer.storeKey)}
               </tbody>
             </table>
           </div>
@@ -177,21 +229,22 @@ function renderMedication(medication, selectedStore) {
 }
 
 function init() {
-  const { slug, selectedStore } = getQueryParams();
+  const { slug, selectedStore, selectedCity, selectedState } = getQueryParams();
 
   if (!slug) {
     renderNotFound();
     return;
   }
 
-  const medication = mockMedications.find((med) => med.slug === slug);
+  const medication = medicationService.findMedicationBySlug(slug);
 
   if (!medication) {
     renderNotFound();
     return;
   }
 
-  renderMedication(medication, selectedStore);
+  renderMedication(medication, selectedStore, selectedCity, selectedState);
 }
 
 init();
+})();

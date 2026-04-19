@@ -26,11 +26,8 @@
 
       <!-- Right side -->
       <div class="flex items-center gap-2 flex-shrink-0">
-        <span class="pgh-badge">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          Pittsburgh, PA
+        <span id="location-badge" class="pgh-badge">
+          All states
         </span>
       </div>
     </div>
@@ -129,9 +126,19 @@
           <span class="results-meta" id="results-meta">Across 0 stores and 0 locations</span>
         </div>
 
+        <div id="pagination-loader" class="pagination-loader" aria-hidden="true">
+          <div class="pagination-loader-spinner"></div>
+        </div>
+
         <!-- Product grid -->
         <div id="product-grid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <!-- Populated by JS -->
+        </div>
+
+        <div id="pagination-bar" class="pagination-bar">
+          <button id="pagination-prev" type="button" class="pagination-button">Previous</button>
+          <div id="pagination-pages" class="pagination-pages"></div>
+          <button id="pagination-next" type="button" class="pagination-button">Next</button>
         </div>
       </section>
     </div>
@@ -157,6 +164,8 @@
   <footer>
     <p>Demo for Agile Methods Class – Team 1 (Shane J, Tracy Yang, Hai Xi)</p>
   </footer>
-  <script type="module" src="style/script.js"></script>
+  <script src="data/mockData.js" defer></script>
+  <script src="data/medication-service.js" defer></script>
+  <script src="style/script.js" defer></script>
 </body>
 </html>
