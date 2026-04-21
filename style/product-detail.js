@@ -116,6 +116,11 @@ function renderMedication(medication, selectedStore, selectedCity, selectedState
     locationOffers.find((offer) => offer.storeKey === selectedStore) ||
     locationOffers.slice().sort((left, right) => left.price - right.price)[0];
   const activeLocationLabel = `${activeOffer.city}, ${activeOffer.state}`;
+  // Match the offer ID format used in the card list: medicationId-state-city-storeKey
+  const favoriteId = `${medication.id}-${activeOffer.state}-${activeOffer.city}-${activeOffer.storeKey}`;
+  const isFav = window.userService ? window.userService.isFavorite(favoriteId) : false;
+
+  const heartSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
 
   root.innerHTML = `
     <div class="details-layout">
@@ -140,8 +145,15 @@ function renderMedication(medication, selectedStore, selectedCity, selectedState
         </p>
 
         <div class="details-price-card">
-          <div class="details-price-store">Current selected store: ${displayStoreName(activeOffer.storeKey)}</div>
-          <div class="details-price-value">${formatPrice(activeOffer.price)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+            <div>
+              <div class="details-price-store">Current selected store: ${displayStoreName(activeOffer.storeKey)}</div>
+              <div class="details-price-value">${formatPrice(activeOffer.price)}</div>
+            </div>
+            <button class="heart-btn heart-btn-lg${isFav ? " is-favorited" : ""}" type="button" aria-label="Save ${medication.name} to favorites">
+              ${heartSvg}
+            </button>
+          </div>
           <div class="details-price-store" style="margin-top:0.35rem;margin-bottom:0;">Location: ${activeLocationLabel}</div>
         </div>
 
@@ -244,7 +256,27 @@ function init() {
   }
 
   renderMedication(medication, selectedStore, selectedCity, selectedState);
+
+  const heartBtn = root.querySelector(".heart-btn");
+  if (heartBtn) {
+    heartBtn.addEventListener("click", () => {
+      if (!window.userService || !window.userService.getSession()) {
+        window.authUI.showLoginModal(() => {
+          window.userService.toggleFavorite(favoriteId);
+          heartBtn.classList.add("is-favorited");
+          window.authUI.updateHeader();
+        });
+      } else {
+        const nowFav = window.userService.toggleFavorite(favoriteId);
+        heartBtn.classList.toggle("is-favorited", nowFav);
+        window.authUI.updateHeader();
+      }
+    });
+  }
 }
 
 init();
+
+// Re-render on login/logout so the heart state updates.
+document.addEventListener("user-changed", init);
 })();

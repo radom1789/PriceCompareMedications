@@ -215,7 +215,8 @@ header {
 .product-card-actions {
   margin-top: 1rem;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .details-button {
@@ -859,6 +860,210 @@ footer {
   padding: 1.25rem;
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+/* ── Heart / favorite button ─────────────────────────────────────────────── */
+
+.heart-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 999px;
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.18s, transform 0.18s;
+  line-height: 1;
+}
+
+.heart-btn:hover {
+  color: #ef4444;
+  transform: scale(1.2);
+}
+
+.heart-btn.is-favorited {
+  color: #ef4444;
+}
+
+.heart-btn.is-favorited svg path {
+  fill: #ef4444;
+}
+
+.heart-btn-lg {
+  padding: 0.55rem;
+}
+
+.heart-btn-lg svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Auth modal ──────────────────────────────────────────────────────────── */
+
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.auth-modal-box {
+  background: white;
+  border-radius: 22px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 32px 64px rgba(15, 23, 42, 0.22);
+}
+
+.auth-modal-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.auth-modal-subtitle {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auth-input:focus {
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.auth-error {
+  color: #ef4444;
+  font-size: 0.88rem;
+  min-height: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--blue-primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-bottom: 0.65rem;
+}
+
+.auth-submit-btn:hover {
+  background: var(--blue-dark);
+}
+
+.auth-cancel-btn {
+  width: 100%;
+  padding: 0.6rem;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.93rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+.auth-cancel-btn:hover {
+  color: var(--text-primary);
+}
+
+/* ── User nav (header right side) ────────────────────────────────────────── */
+
+#user-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-nav-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--blue-primary);
+  white-space: nowrap;
+}
+
+.user-nav-favbtn {
+  background: #fff0f0;
+  border: 1px solid #fca5a5;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ef4444;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s;
+}
+
+.user-nav-favbtn:hover {
+  background: #fee2e2;
+}
+
+.user-nav-logout {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+
+.user-nav-logout:hover {
+  color: var(--text-primary);
+}
+
+.user-nav-login {
+  background: var(--blue-primary);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s;
+}
+
+.user-nav-login:hover {
+  background: var(--blue-dark);
 }
 
 @keyframes fadeInUp {

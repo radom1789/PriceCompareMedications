@@ -51,6 +51,7 @@ let currentPage = 1;
 let hasUserInteractedWithState = false;
 let isPaginationLoading = false;
 let paginationTransitionToken = 0;
+let favoritesOnly = false;
 
 const geotagReferenceCities = [
   { state: "CA", city: "Los Angeles", latitude: 34.0522, longitude: -118.2437 },
@@ -341,7 +342,7 @@ function filterProducts() {
   const selectedCategory = categoryFilter.value;
   const selectedPriceBand = priceFilter.value;
 
-  return products.filter((product) => {
+  const result = products.filter((product) => {
     const matchesQuery =
       !query ||
       product.name.toLowerCase().includes(query) ||
@@ -372,6 +373,12 @@ function filterProducts() {
       matchesPrice
     );
   });
+
+  if (favoritesOnly && window.userService) {
+    const favs = window.userService.getFavorites();
+    return result.filter((p) => favs.includes(p.id));
+  }
+  return result;
 }
 
 function paginateProducts(products) {
@@ -422,6 +429,8 @@ function renderCards(filtered) {
       `View details for ${product.name} at ${product.displayPharmacy} in ${product.city}, ${product.state}`
     );
 
+    const isFav = window.userService ? window.userService.isFavorite(product.id) : false;
+
     card.innerHTML = `
       <div class="store-banner category-${slugifyLabel(product.category)}">
         <span class="store-banner-category">${product.category}</span>
@@ -471,6 +480,11 @@ function renderCards(filtered) {
 
       <div class="product-card-actions">
         <span class="details-button">View details</span>
+        <button class="heart-btn${isFav ? " is-favorited" : ""}" type="button" aria-label="Save ${product.name} to favorites">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
       </div>
 
       <div class="location-banner">
@@ -478,6 +492,22 @@ function renderCards(filtered) {
         <small>ZIP ${product.zip}</small>
       </div>
     `;
+
+    const heartBtn = card.querySelector(".heart-btn");
+    heartBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!window.userService || !window.userService.getSession()) {
+        window.authUI.showLoginModal(() => {
+          window.userService.toggleFavorite(product.id);
+          window.authUI.updateHeader();
+          render(); // re-render all cards so only this heart is active
+        });
+      } else {
+        window.userService.toggleFavorite(product.id);
+        window.authUI.updateHeader();
+        render(); // re-render all cards so previous favorite heart clears
+      }
+    });
 
     card.addEventListener("click", () => {
       window.location.href = detailsUrl;
@@ -651,4 +681,16 @@ populateStoreFilters();
 updateLocationBadge("all");
 render();
 attemptAutoDetectState();
+
+// Re-render cards when the user logs in or out so heart states update.
+document.addEventListener("user-changed", () => {
+  favoritesOnly = false;
+  render();
+});
+
+// Toggle favorites-only view from the header "♥ N saved" button.
+document.addEventListener("toggle-favorites", () => {
+  favoritesOnly = !favoritesOnly;
+  resetToFirstPageAndRender();
+});
 })();
